@@ -1,3 +1,3 @@
-#Disclaimer
-All Scripts are provided as-is. These scripts should be executed at the end user's discretion.
+# SCCM Slack Message Script
 
+Any and all scripts are provided as-is. End-user assumes all responsibility. 
