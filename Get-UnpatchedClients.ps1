@@ -14,7 +14,7 @@ A reminder that PATCHING IS REBOOTING!
 2020-02-14 - Initial build. Happy Valentines Day!
 2020-02-15 - Added the check for the last reboot and made the patching threshold a variable
 2020-02-17 - Added Exception method to catch, Write-Output added to display last patch/reboot time
-2020-02-17 - Changed Get-Hotfix to Get-CIMInstance to display dates for non en-US clients. Thanks to Adam Cook @codaamok
+2020-02-17 - Changed Get-Hotfix to display dates for non en-US clients. Thanks to Adam Cook @codaamok
 #>
 $date = Get-Date
 $lastreboot = (Get-CimInstance -ClassName win32_operatingsystem -ErrorAction Stop | Select-Object lastbootuptime).lastbootuptime
@@ -22,7 +22,7 @@ $lastreboot = (Get-CimInstance -ClassName win32_operatingsystem -ErrorAction Sto
 [int]$lastpatchdays = 60 
 
 try {
-    $lasthotfix = (Get-CimInstance Win32_QuickFixEngineering | Sort-Object InstalledOn | Select-Object -Last 1).InstalledOn
+    $lasthotfix = (Get-HotFix | Select-Object @{l="InstalledOn";e={[DateTime]::Parse($_.psbase.properties["installedon"].value,$([System.Globalization.CultureInfo]::GetCultureInfo("en-US")))}} | Select-Object -Last 1).InstalledOn
 
     $timespan = New-TimeSpan -Start $lasthotfix -End $date
 
