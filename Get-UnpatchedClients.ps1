@@ -12,7 +12,8 @@ A reminder that PATCHING IS REBOOTING!
 
 .NOTES
 2020-02-14 - Initial build. Happy Valentines Day!
-2020-02-15 - Added the check for the last reboot and made the patching threshold a variable 
+2020-02-15 - Added the check for the last reboot and made the patching threshold a variable
+2020-02-16 - Added Exception method to catch, Write-Output added to display last patch/reboot time
 #>
 $date = Get-Date
 $lastreboot = (Get-CimInstance -ClassName win32_operatingsystem -ErrorAction Stop | Select-Object lastbootuptime).lastbootuptime
@@ -27,10 +28,12 @@ try {
     if ($($timespan).Days -gt $lastpatchdays) {
         #Non Compliant machines should report false
         $false
+        Write-Output "Last Patch Installed $lasthotfix"
     }
     elseif ($lasthotfix -gt $lastreboot) {
         #Patching IS Rebooting!!!!!
         $false
+        Write-Output "Last Reboot $lastreboot"
     }
     else {
         #Computer is Compliant and patched
@@ -39,5 +42,6 @@ try {
     }
 }
 catch {
+    $Error[0].Exception.Message
     Write-Output 'Error Occurred'
 }
