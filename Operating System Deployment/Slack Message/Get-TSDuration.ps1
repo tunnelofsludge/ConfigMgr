@@ -1,4 +1,4 @@
-﻿[CmdletBinding()]
+[CmdletBinding()]
 Param(
     [Parameter(Mandatory = $true)]
     [ValidateSet('Start', 'End')]
@@ -10,10 +10,10 @@ $tsenv = New-Object -ComObject Microsoft.SMS.TSEnvironment
 
 # Set the Task Sequence Variable based on the parameter passed.
 if ($StartEnd -eq 'Start') {
-    $tsenv.Value('StartTime') = [datetime]::FromFileTimeUTC((Invoke-RestMethod -Uri 'http://worldclockapi.com/api/json/utc/now' -Method GET).currentFileTime)
+    $tsenv.Value('StartTime') = (get-date).ToUniversalTime()
     #Gets Logged In User for In-Place Upgrade Reporting
     $tsenv.Value('XLoggedInUser') = (Get-CimInstance –ClassName Win32_ComputerSystem | Select-Object UserName -ErrorAction SilentlyContinue).Username 
 }
 if ($StartEnd -eq 'End') {
-    $tsenv.Value('EndTime') = [datetime]::FromFileTimeUTC((Invoke-RestMethod -Uri 'http://worldclockapi.com/api/json/utc/now' -Method GET).currentFileTime)
+    $tsenv.Value('EndTime') = (get-date).ToUniversalTime()
 }
